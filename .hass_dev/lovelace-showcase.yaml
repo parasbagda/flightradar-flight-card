@@ -1,0 +1,95 @@
+title: Flightradar Flight Card Dev
+views:
+  - title: Card Testing
+    path: testing
+    icon: mdi:airplane
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              # Flightradar Flight Card Testing
+              Use the controls below to simulate different flight states and test the card.
+
+          # Main test card with all options
+          - type: custom:flightradar-flight-card
+            entity: sensor.test_flight
+            name: "Custom Name Test"
+            show_header: true
+            show_state: true
+
+          # Card without custom name
+          - type: custom:flightradar-flight-card
+            entity: sensor.test_flight
+
+          # Card without header
+          - type: custom:flightradar-flight-card
+            entity: sensor.test_flight
+            show_header: false
+
+          # Card without state
+          - type: custom:flightradar-flight-card
+            entity: sensor.test_flight
+            show_state: false
+
+          # Minimal card
+          - type: custom:flightradar-flight-card
+            entity: sensor.test_flight
+            show_header: false
+            show_state: false
+
+  - title: Different States
+    path: states
+    icon: mdi:airplane-clock
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              # Different Flight States
+              Examples of the card with different entity states.
+
+          # En route flight
+          - type: custom:flightradar-flight-card
+            entity: sensor.test_flight
+            name: "En Route Flight"
+
+          # Arrived flight
+          - type: custom:flightradar-flight-card
+            entity: sensor.test_flight_2
+            name: "Arrived Flight"
+
+          # Unavailable flight
+          - type: custom:flightradar-flight-card
+            entity: sensor.test_flight_3
+            name: "Unavailable Flight"
+
+          # Non-existent entity
+          - type: custom:flightradar-flight-card
+            entity: sensor.non_existent_flight
+            name: "Missing Entity"
+
+  - title: Controls
+    path: controls
+    icon: mdi:tune
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              # Flight Simulation Controls
+              Adjust these values to test different card states.
+
+          - type: entities
+            title: Flight Data Controls
+            entities:
+              - entity: input_text.flight_number
+              - entity: input_select.flight_status
+              - entity: input_number.flight_altitude
+              - entity: input_number.flight_speed
+              - entity: input_number.flight_heading
+
+          - type: custom:flightradar-flight-card
+            entity: sensor.test_flight
+            name: "Live Preview"
+

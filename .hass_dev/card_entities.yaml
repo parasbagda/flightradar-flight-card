@@ -1,0 +1,85 @@
+# Include test entities
+input_text:
+  flight_number:
+    name: Flight Number
+    initial: 'BA123'
+
+input_number:
+  flight_altitude:
+    name: Altitude
+    min: 0
+    max: 45000
+    step: 100
+    initial: 35000
+    unit_of_measurement: ft
+
+  flight_speed:
+    name: Speed
+    min: 0
+    max: 600
+    step: 10
+    initial: 450
+    unit_of_measurement: kts
+
+  flight_heading:
+    name: Heading
+    min: 0
+    max: 360
+    step: 1
+    initial: 270
+    unit_of_measurement: '°'
+
+input_select:
+  flight_status:
+    name: Flight Status
+    options:
+      - scheduled
+      - boarding
+      - departed
+      - en_route
+      - landing
+      - arrived
+      - cancelled
+      - delayed
+    initial: en_route
+
+# Template sensors to simulate flight data
+template:
+  - sensor:
+      - name: 'Test Flight'
+        unique_id: test_flight_sensor
+        state: "{{ states('input_select.flight_status') }}"
+        attributes:
+          friendly_name: 'Test Flight BA123'
+          flight_number: "{{ states('input_text.flight_number') }}"
+          airline: 'British Airways'
+          origin: 'London Heathrow (LHR)'
+          destination: 'New York JFK (JFK)'
+          altitude: "{{ states('input_number.flight_altitude') | int }}"
+          speed: "{{ states('input_number.flight_speed') | int }}"
+          heading: "{{ states('input_number.flight_heading') | int }}"
+          latitude: 52.3676
+          longitude: -31.2456
+          aircraft_type: 'Boeing 777-300ER'
+          registration: 'G-STBA'
+
+      - name: 'Test Flight 2'
+        unique_id: test_flight_sensor_2
+        state: 'arrived'
+        attributes:
+          friendly_name: 'Arrived Flight LH456'
+          flight_number: 'LH456'
+          airline: 'Lufthansa'
+          origin: 'Frankfurt (FRA)'
+          destination: 'London Heathrow (LHR)'
+          altitude: 0
+          speed: 0
+          heading: 90
+          aircraft_type: 'Airbus A320'
+          registration: 'D-AIZX'
+
+      - name: 'Test Flight 3'
+        unique_id: test_flight_sensor_3
+        state: 'unavailable'
+        attributes:
+          friendly_name: 'Unavailable Flight'

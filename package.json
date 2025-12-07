@@ -1,0 +1,56 @@
+{
+  "name": "flightradar-flight-card",
+  "version": "0.0.0",
+  "description": "A custom Home Assistant card for displaying Flightradar flight information",
+  "main": "dist/flightradar-flight-card.js",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c --watch",
+    "start": "npm run watch",
+    "start:hass-stable": "docker run --rm -p8123:8123 -v ./.hass_dev:/config homeassistant/home-assistant:stable",
+    "start:hass": "docker run --rm -p8123:8123 -v ./.hass_dev:/config homeassistant/home-assistant:beta",
+    "start:hass-dev": "docker run --rm -p8123:8123 -v ./.hass_dev:/config homeassistant/home-assistant:dev",
+    "stop:hass": "docker compose down",
+    "logs:hass": "docker compose logs -f",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write src/**/*.ts",
+    "format:check": "prettier --check src/**/*.ts",
+    "release": "release-it"
+  },
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "custom-card",
+    "flightradar",
+    "flight-tracker"
+  ],
+  "author": "Ricardo Reis",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/plckr/flightradar-flight-card"
+  },
+  "dependencies": {
+    "custom-card-helpers": "^1.9.0",
+    "lit": "^3.2.1"
+  },
+  "devDependencies": {
+    "@release-it/conventional-changelog": "^9.0.3",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.48.1",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.4.2",
+    "release-it": "^17.10.0",
+    "rollup": "^4.53.3",
+    "rollup-plugin-serve": "^3.0.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3"
+  }
+}
