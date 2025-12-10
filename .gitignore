@@ -45,5 +45,13 @@ temp/
 !.hass_dev/views
 !.hass_dev/www
 !.hass_dev/packages
-.hass_dev/www/community/*
 
+!.hass_dev/custom_components
+.hass_dev/custom_components/**/*.pyc
+
+# to keep flightradar24 config entry
+!.hass_dev/.storage/
+.hass_dev/.storage/*
+!.hass_dev/.storage/core.config_entries
+
+.hass_dev/www/community/*

@@ -1,4 +1,5 @@
-default_config:
+config:
+history:
 
 homeassistant:
   packages:
@@ -6,7 +7,6 @@ homeassistant:
 
 # Enable frontend
 frontend:
-  themes: !include_dir_merge_named themes
   extra_module_url:
     - http://localhost:4000/flightradar-flight-card.js
 

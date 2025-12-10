@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "minor_version": 5,
+  "key": "core.config_entries",
+  "data": {
+    "entries": [
+      {"created_at":"2025-12-10T23:10:06.929233+00:00","data":{},"disabled_by":null,"discovery_keys":{},"domain":"backup","entry_id":"01KC58EW2HYV559W2E12F0GEV0","minor_version":1,"modified_at":"2025-12-10T23:10:06.929235+00:00","options":{},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"system","subentries":[],"title":"Backup","unique_id":null,"version":1},
+      {"created_at":"2025-12-10T23:10:45.505545+00:00","data":{},"disabled_by":null,"discovery_keys":{},"domain":"shopping_list","entry_id":"01KC58G1R1XX5MR9Q8BGX59KSH","minor_version":1,"modified_at":"2025-12-10T23:10:45.505549+00:00","options":{},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"onboarding","subentries":[],"title":"Shopping list","unique_id":"shopping_list","version":1},
+      {"created_at":"2025-12-10T23:10:45.581258+00:00","data":{},"disabled_by":null,"discovery_keys":{},"domain":"radio_browser","entry_id":"01KC58G1TD7QBP5E1B1RSNB3XD","minor_version":1,"modified_at":"2025-12-10T23:10:45.581261+00:00","options":{},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"onboarding","subentries":[],"title":"Radio Browser","unique_id":null,"version":1},
+      {"created_at":"2025-12-10T23:10:45.587930+00:00","data":{"track_home":true},"disabled_by":null,"discovery_keys":{},"domain":"met","entry_id":"01KC58G1TK74JX8K63AFAEBHHJ","minor_version":1,"modified_at":"2025-12-10T23:10:45.587935+00:00","options":{},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"onboarding","subentries":[],"title":"Home","unique_id":null,"version":1},
+      {"created_at":"2025-12-10T23:10:45.592089+00:00","data":{"language":"en","tld":"com"},"disabled_by":null,"discovery_keys":{},"domain":"google_translate","entry_id":"01KC58G1TRG7RBNGF4Q1X404A7","minor_version":1,"modified_at":"2025-12-10T23:10:45.592093+00:00","options":{},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"onboarding","subentries":[],"title":"Google Translate text-to-speech","unique_id":null,"version":1},
+      {"created_at":"2025-12-10T23:11:50.535563+00:00","data":{"enable_tracker":false,"latitude":34.2109109178703,"longitude":-77.88333444706267,"max_altitude":100000,"min_altitude":-1,"most_tracked":true,"radius":10000.0,"scan_interval":10},"disabled_by":null,"discovery_keys":{},"domain":"flightradar24","entry_id":"01KC58J187CEHBQBY9QNPH95WY","minor_version":1,"modified_at":"2025-12-10T23:15:24.934759+00:00","options":{"enable_tracker":false,"latitude":34.2109109178703,"longitude":-77.88333444706267,"max_altitude":100000,"min_altitude":-1,"most_tracked":true,"radius":10000.0,"scan_interval":10},"pref_disable_new_entities":false,"pref_disable_polling":false,"source":"user","subentries":[],"title":"FlightRadar24","unique_id":null,"version":1}
+    ]
+  }
+}
