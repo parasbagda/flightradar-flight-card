@@ -2,6 +2,8 @@ config:
 history:
 
 homeassistant:
+  latitude: 34.2109109178703
+  longitude: -77.88573674660009
   packages:
     card_entities: !include card_entities.yaml
 
