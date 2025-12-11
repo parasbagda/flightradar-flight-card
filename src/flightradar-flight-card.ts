@@ -46,9 +46,9 @@ export class FlightradarFlightCard extends LitElement {
     groundSpeed: number;
     isLive: boolean;
     /** Flight duration in seconds */
-    flightTime: number;
-    departureTime: number;
-    arrivalTime: number;
+    flightTime?: number;
+    departureTime?: number;
+    arrivalTime?: number;
   };
 
   static styles = cardStyles;
@@ -86,7 +86,16 @@ export class FlightradarFlightCard extends LitElement {
     }
 
     const data = stateObj.attributes.flights[0];
-    const f = v.parse(areaFlightSchema, data);
+    const f = v.parse(areaFlightSchema, data, {
+      message(issue) {
+        console.error(issue);
+        return issue.message;
+      },
+    });
+
+    if (f.on_ground === 1) {
+      throw new Error('Unhandled ground vehicle state');
+    }
 
     this._flight = {
       id: f.id,
@@ -95,8 +104,12 @@ export class FlightradarFlightCard extends LitElement {
       airlineIcao: f.airline_icao,
       get airlineLabel() {
         const airline = f.airline_short || f.airline;
-        if (airline === 'Private owner') return 'Aeronave privada';
-        else return airline;
+
+        if (airline === 'Private owner') {
+          return 'Aeronave privada';
+        }
+
+        return airline ?? 'Desconhecido';
       },
       aircraftPhoto: f.aircraft_photo_small,
       aircraftModel: f.aircraft_model,
@@ -105,13 +118,17 @@ export class FlightradarFlightCard extends LitElement {
       distance: f.closest_distance ?? f.distance,
       altitude: f.altitude,
       groundSpeed: f.ground_speed,
-      departureTime: f.time_real_departure,
-      arrivalTime: f.time_estimated_arrival || f.time_scheduled_arrival,
+      departureTime: f.time_real_departure ?? undefined,
+      arrivalTime: f.time_estimated_arrival ?? f.time_scheduled_arrival ?? undefined,
       get flightTime() {
+        if (!this.departureTime || !this.arrivalTime) return;
+
         return this.arrivalTime - this.departureTime;
       },
       get isLive() {
-        return this.arrivalTime > Date.now();
+        if (!this.arrivalTime) return false;
+
+        return this.arrivalTime > Date.now() / 1000;
       },
     };
   }
@@ -146,7 +163,7 @@ export class FlightradarFlightCard extends LitElement {
   }
 
   protected renderFlightProgress(): TemplateResult {
-    if (!this._flight.isLive) return html``;
+    if (!this._flight.isLive || !this._flight.arrivalTime) return html``;
 
     const relativeTime = formatRelativeTime(
       new Date(),
@@ -154,43 +171,13 @@ export class FlightradarFlightCard extends LitElement {
       this.hass.language
     );
 
-    return html` <div
-        style="
-          position: relative;
-          margin-top: 16px;
-          background: var(--state-active-color);
-          background: linear-gradient(90deg,
-            var(--state-active-color) 0%, 
-            var(--state-active-color) {{ flight_percent * 100 }}%,
-            var(--secondary-background-color) {{ flight_percent * 100 }}%,
-            var(--secondary-background-color) 100%);
-          height: 4px;
-          border-radius:999px;
-        "
-      >
-        <ha-icon
-          icon="mdi:airplane"
-          style="
-              position: absolute;
-              top: 0px;
-              left: {{ flight_percent * 100 }}%;
-              transform: translate(-50%, -50%);
-              --mdc-icon-size: 16px;
-              background: var(--card-background-color,#fff);
-              color: var(--accent-color);
-            "
-        />
+    return html` <div class="flight-progress">
+      <div class="progress-bar" style="--progress-percent: ${70};">
+        <ha-icon icon="mdi:airplane" />
       </div>
 
-      <p
-        style="
-          margin-top:6px;
-          text-align:right;
-          opacity: 0.6;
-        "
-      >
-        Restam ${relativeTime} para chegar a ${this._flight.destination}
-      </p>`;
+      <p class="progress-text">Restam ${relativeTime} para chegar a ${this._flight.destination}</p>
+    </div>`;
   }
 
   protected render(): TemplateResult {
@@ -199,228 +186,67 @@ export class FlightradarFlightCard extends LitElement {
     }
 
     return html`
-      <ha-card style="padding: 16px;>
-        <div
-          style="
-      width:100%;
-      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-      color:var(--primary-text-color);
-    "
-        >
-          <div
-            style="
-        font-size:11px;
-        opacity:0.7;
-        letter-spacing:0.10em;
-        text-transform:uppercase;
-      "
-          >
+      <ha-card>
+        <div>
+          <div class="title">
             Último avião a sobrevoar (a ${this._flight.distance.toFixed(1)} km)
           </div>
 
-          <div
-            style="
-        display:grid;
-        grid-template-columns:minmax(0, 1.5fr) auto;
-        gap:16px;
-        align-items:center;
-      "
-          >
-            <div
-              style="
-          margin-top:12px;
-          font-size:26px;
-          line-height: 1.15;
-          font-weight:600;
-          color:var(--primary-text-color);
-        "
-            >
+          <div class="main-content">
+            <div class="main-content-left">
               ${this.renderFlightTitle()}
 
-              <div
-                style="
-            display:flex;
-            align-items:center;
-            gap:8px;
-            margin-top:4px;
-          "
-              >
-                <p
-                  style="
-              font-size:15px;
-              opacity:0.8;
-            "
-                >
-                  ${this._flight.callsign}
-                </p>
+              <div class="callsign-info">
+                <p>${this._flight.callsign}</p>
 
-                ${
-                  this._flight.isLive
-                    ? html`
-                        <div
-                          style="
-                display:inline-flex;
-                align-items:center;
-                gap:4px;
-                font-size:10px;
-                padding: 2px 6px;
-                color: white;
-                background: var(--state-active-color);
-                border-radius: 999px;
-              "
-                        >
-                          Live
-                          <div
-                            style="
-                  width: 4px;
-                  height: 4px;
-                  border-radius: 100%;
-                  background: white;
-                  animation: pulse 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-                "
-                          ></div>
-                        </div>
-                      `
-                    : ''
-                }
-              </div>
-
-              <div
-                style="
-            margin-top:6px;
-            font-size:17px;
-            opacity:0.9;
-          "
-              >
-                ${this._flight.origin} → ${this._flight.destination}
-              </div>
-
-              ${
-                this._flight.altitude && this._flight.groundSpeed
+                ${this._flight.isLive
                   ? html`
-                      <div
-                        style="
-              margin-top:8px;
-              display:flex;
-              gap:24px;
-              font-size:13px;
-            "
-                      >
-                        <div>
-                          <p
-                            style="
-                  font-size:10px;
-                  opacity:0.6;
-                  text-transform:uppercase;
-                  letter-spacing:0.10em;
-                "
-                          >
-                            Altitude
-                          </p>
-                          <p
-                            style="
-                  font-size:20px;
-                  font-weight:600;
-                "
-                          >
-                            ${this._flight.altitude} ft
-                          </p>
-                        </div>
-
-                        <div>
-                          <p
-                            style="
-                  font-size:10px;
-                  opacity:0.6;
-                  text-transform:uppercase;
-                  letter-spacing:0.10em;
-                "
-                          >
-                            Velocidade de solo
-                          </p>
-                          <p
-                            style="
-                  font-size:20px;
-                  font-weight:600;
-                "
-                          >
-                            ${this._flight.groundSpeed} kts
-                          </p>
-                        </div>
+                      <div class="live-indicator">
+                        Live
+                        <div class="pulse"></div>
                       </div>
                     `
-                  : ''
-              }
-            </div>
-
-            <div
-              style="
-          display: flex;
-          flex-direction:column;
-          align-items:center;
-          gap: 6px;
-        "
-            >
-              <div
-                style="
-            display: flex;
-            align-items:center;
-            gap: 8px;
-            margin-top:4px;
-          "
-              >
-                ${
-                  this._flight.airlineIcao
-                    ? html`
-                        <img
-                          src="http://localhost:4000/flightaware_logos/${this._flight
-                            .airlineIcao}.png"
-                          style="
-                  max-width:70px;
-                  max-height: 20px;
-                  object-fit: contain;
-                  filter:drop-shadow(0 0 2px var(--secondary-text-color));
-                "
-                        />
-                      `
-                    : ''
-                }
-
-                <p
-                  style="
-              font-size:12px;
-              opacity:0.7;
-              text-transform:uppercase;
-            "
-                >
-                  ${this._flight.airlineLabel}
-                </p>
+                  : ''}
               </div>
 
-              ${
-                this._flight.aircraftPhoto
+              <div class="flight-locations">
+                ${this._flight.origin}
+                <ha-icon icon="mdi:arrow-right"></ha-icon>
+                ${this._flight.destination}
+              </div>
+
+              <div class="flight-speed-info-container">
+                <div>
+                  <p class="label">Altitude</p>
+                  <p class="value">${this._flight.altitude} ft</p>
+                </div>
+
+                <div>
+                  <p class="label">Velocidade de solo</p>
+                  <p class="value">${this._flight.groundSpeed} kts</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="main-content-right">
+              <div class="airline-container">
+                ${this._flight.airlineIcao
                   ? html`
                       <img
-                        src="${this._flight.aircraftPhoto}"
-                        style="
-                border-radius:8px;
-                width:120px;
-                height:auto;
-              "
+                        src="http://localhost:4000/flightaware_logos/${this._flight
+                          .airlineIcao}.png"
                       />
                     `
-                  : ''
-              }
+                  : ''}
 
-              <p
-                style="
-            font-size:12px;
-            opacity:0.7;
-            text-transform:uppercase;
-          "
-              >
-                ${this._flight.aircraftModel}
-              </p>
+                <p>${this._flight.airlineLabel}</p>
+              </div>
+
+              ${this._flight.aircraftPhoto
+                ? html` <img src="${this._flight.aircraftPhoto}" class="aircraft-photo" /> `
+                : ''}
+
+              <p class="aircraft-model">${this._flight.aircraftModel}</p>
             </div>
           </div>
 
