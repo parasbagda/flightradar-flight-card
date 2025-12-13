@@ -3,10 +3,11 @@ import * as v from 'valibot';
 export type MostTrackedFlight = v.InferOutput<typeof areaFlightSchema>;
 
 export const mostTrackedFlightSchema = v.object({
+  _type: v.optional(v.literal('tracked'), 'tracked'),
   id: v.string(),
   flight_number: v.nullable(v.string()),
   callsign: v.string(),
-  squawk: v.string(),
+  squawk: v.nullable(v.string()),
   clicks: v.number(),
   airport_origin_code_iata: v.nullable(v.string()),
   airport_origin_city: v.nullable(v.string()),
@@ -20,6 +21,7 @@ export const mostTrackedFlightSchema = v.object({
 export type AreaFlight = v.InferOutput<typeof areaFlightSchema>;
 
 export const areaFlightSchema = v.object({
+  _type: v.optional(v.literal('area'), 'area'),
   id: v.string(),
   flight_number: v.nullable(v.string()),
   callsign: v.string(),
