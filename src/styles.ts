@@ -1,12 +1,6 @@
 import { css } from 'lit';
 
-export const cardStyles = css`
-  @keyframes pulse {
-    50% {
-      opacity: 0.5;
-    }
-  }
-
+export const resetStyles = css`
   p {
     margin: 0;
   }
@@ -14,6 +8,14 @@ export const cardStyles = css`
   a {
     text-decoration: none;
     color: inherit;
+  }
+`;
+
+export const cardStyles = css`
+  @keyframes pulse {
+    50% {
+      opacity: 0.5;
+    }
   }
 
   ha-card {

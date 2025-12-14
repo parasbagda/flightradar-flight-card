@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import * as v from 'valibot';
 
 import { CARD_NAME, CardConfig, DEFAULT_CONFIG } from './const';
-import { cardStyles } from './styles';
+import { cardStyles, resetStyles } from './styles';
 import { ChangedProps, HomeAssistant } from './types/homeassistant';
 import { isValidAirlineLogo } from './utils/airline-logos';
 import { hasConfigOrEntityChanged } from './utils/has-changed';
@@ -51,7 +51,7 @@ export class FlightradarFlightCard extends LitElement {
     arrivalTime?: number;
   };
 
-  static styles = cardStyles;
+  static styles = [resetStyles, cardStyles];
 
   public setConfig(config: Partial<CardConfig>): void {
     if (!config.entity) {

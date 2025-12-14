@@ -1,6 +1,7 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
+import { resetStyles } from './styles';
 import { HomeAssistant } from './types/homeassistant';
 import { formatRelativeTime } from './utils/date';
 
@@ -46,37 +47,40 @@ export class FlightProgressBar extends LitElement {
     }
   }
 
-  static styles = css`
-    .bar {
-      position: relative;
-      background: var(--state-active-color);
-      background: linear-gradient(
-        90deg,
-        var(--state-active-color) 0%,
-        var(--state-active-color) calc(var(--progress-percent) * 1%),
-        var(--secondary-background-color) calc(var(--progress-percent) * 1%),
-        var(--secondary-background-color) 100%
-      );
-      height: 4px;
-      border-radius: 999px;
-    }
+  static styles = [
+    resetStyles,
+    css`
+      .bar {
+        position: relative;
+        background: var(--state-active-color);
+        background: linear-gradient(
+          90deg,
+          var(--state-active-color) 0%,
+          var(--state-active-color) calc(var(--progress-percent) * 1%),
+          var(--secondary-background-color) calc(var(--progress-percent) * 1%),
+          var(--secondary-background-color) 100%
+        );
+        height: 4px;
+        border-radius: 999px;
+      }
 
-    .bar > ha-icon {
-      position: absolute;
-      top: 0px;
-      left: calc(var(--progress-percent) * 1%);
-      transform: translate(-50%, -50%);
-      --mdc-icon-size: var(--ha-space-4);
-      background: var(--card-background-color, #fff);
-      color: var(--accent-color);
-    }
+      .bar > ha-icon {
+        position: absolute;
+        top: 0px;
+        left: calc(var(--progress-percent) * 1%);
+        transform: translate(-50%, -50%);
+        --mdc-icon-size: var(--ha-space-4);
+        background: var(--card-background-color, #fff);
+        color: var(--accent-color);
+      }
 
-    .text {
-      margin-top: 6px;
-      text-align: right;
-      opacity: 0.6;
-    }
-  `;
+      .text {
+        margin-top: 6px;
+        text-align: right;
+        opacity: 0.6;
+      }
+    `,
+  ];
 
   public render() {
     const relativeTime = formatRelativeTime(
