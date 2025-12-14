@@ -1,17 +1,18 @@
+import fs from 'fs';
+import path from 'path';
+
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
 import typescript from '@rollup/plugin-typescript';
 import virtual from '@rollup/plugin-virtual';
-import fs from 'fs';
-import path from 'path';
 import { defineConfig } from 'rollup';
 import serve from 'rollup-plugin-serve';
 
 const dev = !!process.env.ROLLUP_WATCH;
 
 export default defineConfig(() => ({
-  input: 'src/flightradar-flight-card.ts',
+  input: 'src/index.ts',
   output: {
     file: 'dist/flightradar-flight-card.js',
     format: 'es',

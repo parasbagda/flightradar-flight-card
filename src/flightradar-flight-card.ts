@@ -2,26 +2,12 @@ import { LitElement, html, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import * as v from 'valibot';
 
-import { CARD_DESCRIPTION, CARD_NAME, CARD_VERSION, CardConfig, DEFAULT_CONFIG } from './const';
-import './flight-progress-bar';
+import { CARD_NAME, CardConfig, DEFAULT_CONFIG } from './const';
 import { cardStyles } from './styles';
 import { ChangedProps, HomeAssistant } from './types';
 import { isValidAirlineLogo } from './utils/airline-logos';
 import { hasConfigOrEntityChanged } from './utils/has-changed';
-import { registerCustomCard } from './utils/register-card';
 import { areaFlightSchema } from './utils/schemas';
-
-console.info(
-  `%c ${CARD_NAME.toUpperCase()} %c v${CARD_VERSION} `,
-  'color: white; background: #3498db; font-weight: 700;',
-  'color: #3498db; background: white; font-weight: 700;'
-);
-
-registerCustomCard({
-  type: CARD_NAME,
-  name: 'Flightradar Flight Card',
-  description: CARD_DESCRIPTION,
-});
 
 @customElement(CARD_NAME)
 export class FlightradarFlightCard extends LitElement {
