@@ -6,6 +6,7 @@ import { CARD_NAME, CardConfig, DEFAULT_CONFIG } from './const';
 import { cardStyles, resetStyles } from './styles';
 import { ChangedProps, HomeAssistant } from './types/homeassistant';
 import { isValidAirlineLogo } from './utils/airline-logos';
+import { getFlightLabel } from './utils/flight';
 import { hasConfigOrEntityChanged } from './utils/has-changed';
 import { areaFlightSchema } from './utils/schemas';
 
@@ -139,53 +140,27 @@ export class FlightradarFlightCard extends LitElement {
   }
 
   protected renderFlightTitle() {
-    if (
-      !this._flight.flightNumber &&
-      (!this._flight.callsign || this._flight.callsign === 'Blocked') &&
-      !this._flight.aircraftRegistration
-    ) {
-      return html`<p>${this._flight.aircraftCode}</p>`;
+    const { label, url } = getFlightLabel(this._flight);
+
+    if (!url) {
+      return html`<p>${label}</p>`;
     }
 
-    const url = new URL(`https://www.flightradar24.com`);
-    url.pathname = `/data/aircraft/${this._flight.aircraftRegistration}`;
-
-    if (this._flight.flightNumber) {
-      url.pathname = `/data/flights/${this._flight.flightNumber}`;
-    }
-
-    if (this._flight.isLive) {
-      const urlPath = [this._flight.id];
-
-      if (this._flight.callsign) {
-        urlPath.unshift(this._flight.callsign);
-      } else if (this._flight.aircraftCode) {
-        urlPath.unshift(this._flight.aircraftCode);
-      }
-
-      url.pathname = `/${urlPath.join('/')}`;
-    }
-
-    const label =
-      this._flight.flightNumber ?? this._flight.callsign ?? this._flight.aircraftRegistration;
-
-    return html`
-      <a
-        href=${url}
-        rel="noopener noreferrer"
-        target="_blank"
-        style="color:var(--primary-text-color);"
-      >
-        ${label}
-        <ha-icon
-          icon="mdi:open-in-new"
-          style="
-            --mdc-icon-size:16px;
-            opacity:0.75"
-          ;
-        />
-      </a>
-    `;
+    return html`<a
+      href=${url}
+      rel="noopener noreferrer"
+      target="_blank"
+      style="color:var(--primary-text-color);"
+    >
+      ${label}
+      <ha-icon
+        icon="mdi:open-in-new"
+        style="
+        --mdc-icon-size:16px;
+        opacity:0.75"
+        ;
+      />
+    </a>`;
   }
 
   protected render() {
@@ -251,7 +226,13 @@ export class FlightradarFlightCard extends LitElement {
               </div>
 
               ${this._flight.aircraftPhoto
-                ? html` <img src="${this._flight.aircraftPhoto}" class="aircraft-photo" /> `
+                ? html`
+                    <img
+                      src="${this._flight.aircraftPhoto}"
+                      .alt=${this._flight.aircraftModel}
+                      class="aircraft-photo"
+                    />
+                  `
                 : nothing}
 
               <p class="aircraft-model">${this._flight.aircraftModel}</p>
