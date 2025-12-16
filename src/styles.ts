@@ -106,6 +106,7 @@ export const cardStyles = css`
     flex-direction: column;
     align-items: center;
     gap: 6px;
+    text-align: center;
   }
 
   .main-content-right .airline-container {
