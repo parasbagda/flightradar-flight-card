@@ -129,10 +129,12 @@ export const cardStyles = css`
     text-transform: uppercase;
   }
 
-  .main-content-right img.aircraft-photo {
+  .main-content-right .aircraft-photo {
     border-radius: 8px;
     max-width: 120px;
     height: auto;
+    color: rgba(var(--rgb-primary-text-color), 0.7);
+    --mdc-icon-size: 60px;
   }
 
   .main-content-right .aircraft-model {

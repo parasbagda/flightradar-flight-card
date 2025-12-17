@@ -10,8 +10,8 @@ export type AreaFlight = {
   id: string;
   aircraftRegistration: string | null;
   aircraftPhoto: string | null;
-  aircraftCode: string;
-  aircraftModel: string;
+  aircraftCode: string | null;
+  aircraftModel: string | null;
   airlineIcao: string | null;
   flightNumber: string | null;
   callsign: string | null;
@@ -123,6 +123,7 @@ export class FlightradarFlightCard extends LitElement {
                   ? html`
                       <img
                         src="http://localhost:4000/flightaware_logos/${this.flight.airlineIcao}.png"
+                        alt="Airline ICAO Logo '${this.flight.airlineIcao}'"
                       />
                     `
                   : nothing}
@@ -134,13 +135,14 @@ export class FlightradarFlightCard extends LitElement {
                 ? html`
                     <img
                       src="${this.flight.aircraftPhoto}"
-                      .alt=${this.flight.aircraftModel}
+                      .alt=${this.flight.aircraftModel ?? ''}
                       class="aircraft-photo"
                     />
                   `
+                : html`<ha-icon icon="mdi:airplane" class="aircraft-photo"></ha-icon>`}
+              ${this.flight.aircraftModel
+                ? html` <p class="aircraft-model">${this.flight.aircraftModel}</p> `
                 : nothing}
-
-              <p class="aircraft-model">${this.flight.aircraftModel}</p>
             </div>
           </div>
 

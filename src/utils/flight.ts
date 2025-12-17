@@ -9,7 +9,7 @@ export function getFlightLabel(data: {
   flightNumber: string | null;
   callsign: string | null;
   aircraftRegistration: string | null;
-  aircraftCode: string;
+  aircraftCode: string | null;
   isLive: boolean;
 }): { label: string; url: URL | null } {
   if (
@@ -17,7 +17,7 @@ export function getFlightLabel(data: {
     (!data.callsign || data.callsign === 'Blocked') &&
     !data.aircraftRegistration
   ) {
-    return { label: data.aircraftCode, url: null };
+    return { label: data.aircraftCode ?? 'Desconhecido', url: null };
   }
 
   const url = new URL(`https://www.flightradar24.com`);
@@ -42,5 +42,5 @@ export function getFlightLabel(data: {
   const label =
     data.flightNumber ?? data.callsign ?? data.aircraftRegistration ?? data.aircraftCode;
 
-  return { label, url };
+  return { label: label ?? 'Desconhecido', url };
 }

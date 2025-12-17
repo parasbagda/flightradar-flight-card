@@ -2,20 +2,26 @@ import * as v from 'valibot';
 
 export type MostTrackedFlight = v.InferOutput<typeof areaFlightSchema>;
 
+const callsignSchema = v.pipe(
+  v.string(),
+  v.transform((value) => value.replace(/\u0004/, ''))
+);
+
 export const mostTrackedFlightSchema = v.object({
   _type: v.optional(v.literal('tracked'), 'tracked'),
   id: v.string(),
   flight_number: v.nullable(v.string()),
-  callsign: v.nullable(v.string()),
+  callsign: v.nullable(callsignSchema),
   squawk: v.nullable(v.string()),
   clicks: v.number(),
   airport_origin_code_iata: v.nullable(v.string()),
   airport_origin_city: v.nullable(v.string()),
   airport_destination_code_iata: v.nullable(v.string()),
   airport_destination_city: v.nullable(v.string()),
-  aircraft_code: v.string(),
-  aircraft_model: v.string(),
+  aircraft_code: v.nullable(v.string()),
+  aircraft_model: v.nullable(v.string()),
   on_ground: v.nullable(v.number()),
+  tracked_by_device: v.optional(v.string()),
 });
 
 export type AreaFlight = v.InferOutput<typeof areaFlightSchema>;
@@ -24,7 +30,7 @@ export const areaFlightSchema = v.object({
   _type: v.optional(v.literal('area'), 'area'),
   id: v.string(),
   flight_number: v.nullable(v.string()),
-  callsign: v.nullable(v.string()),
+  callsign: v.nullable(callsignSchema),
   aircraft_registration: v.nullable(v.string()),
   aircraft_photo_small: v.nullable(v.string()),
   aircraft_photo_medium: v.nullable(v.string()),
