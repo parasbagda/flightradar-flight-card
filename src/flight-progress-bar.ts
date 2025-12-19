@@ -38,7 +38,7 @@ export class FlightProgressBar extends LitElement {
   private _startTimer() {
     this._timerInterval = setInterval(() => {
       this._now = new Date();
-    }, 1000);
+    }, 10 * 1000);
   }
 
   private _stopTimer() {
@@ -88,14 +88,9 @@ export class FlightProgressBar extends LitElement {
   }
 
   public render() {
-    const timeLeft = formatTimeLeft(
-      this.arrivalTime - this._now.getTime() / 1000,
-      this.hass.locale.language
-    );
-
-    const percent =
-      (this.arrivalTime * 1000 - this._now.getTime()) /
-      (this.arrivalTime * 1000 - this.departureTime * 1000);
+    const nowSeconds = this._now.getTime() / 1000;
+    const timeLeft = formatTimeLeft(this.arrivalTime - nowSeconds, this.hass.locale.language);
+    const percent = (nowSeconds - this.departureTime) / (this.arrivalTime - this.departureTime);
 
     return html`
       <div
