@@ -1,4 +1,9 @@
 {
+  "title": {
+    "default_area": "Aeronave a sobrevoar a área",
+    "default_mosttracked": "Voo mais procurado no FlightRadar24"
+  },
+
   "altitude": "Altitude",
   "ground_speed": "Velocidade de solo",
   "distance": "Distância",

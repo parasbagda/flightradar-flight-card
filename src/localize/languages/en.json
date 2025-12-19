@@ -1,4 +1,9 @@
 {
+  "title": {
+    "default_area": "Flight in the area",
+    "default_mosttracked": "Most tracked flight on FlightRadar24"
+  },
+
   "altitude": "Altitude",
   "ground_speed": "Ground speed",
   "distance": "Distance",

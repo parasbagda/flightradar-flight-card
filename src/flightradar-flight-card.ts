@@ -8,8 +8,9 @@ import { KeyString, localize } from './localize/localize';
 import { cardStyles, resetStyles } from './styles';
 import { ChangedProps, HomeAssistant } from './types/homeassistant';
 import { computeAirlineIcao, getAirlineName } from './utils/airline-icao';
-import { hasConfigOrEntityChanged } from './utils/has-changed';
+import { hasConfigChanged, hasEntityChanged } from './utils/has-changed';
 import { areaFlightSchema, mostTrackedFlightSchema } from './utils/schemas';
+import { defined } from './utils/type-guards';
 
 @customElement(CARD_NAME)
 export class FlightradarFlightCard extends LitElement {
@@ -22,14 +23,14 @@ export class FlightradarFlightCard extends LitElement {
   static styles = [resetStyles, cardStyles];
 
   public setConfig(config: Partial<CardConfig>): void {
-    if (!config.entity) {
-      throw new Error('Please define an entity');
+    if (!config.entities || config.entities.length === 0) {
+      throw new Error('Please define at least one entity');
     }
 
     this._config = {
       ...DEFAULT_CONFIG,
       ...config,
-      entity: config.entity,
+      entities: config.entities,
     };
   }
 
@@ -42,44 +43,67 @@ export class FlightradarFlightCard extends LitElement {
       return false;
     }
 
-    return hasConfigOrEntityChanged(this, changedProps);
+    return (
+      hasConfigChanged(this.hass, changedProps) ||
+      hasEntityChanged(
+        this.hass,
+        changedProps,
+        this._config.entities.map((entity) => entity.entity_id)
+      )
+    );
   }
 
   protected render() {
+    if (!this._config || !this.hass) {
+      console.error('Missing config or hass');
+      return html`<hui-error-card>Something went wrong: check console for errors</hui-error-card>`;
+    }
+
     const t = (key: KeyString, params?: Record<string, string>) => {
       return localize(key, this.hass.locale.language, params);
     };
 
-    const entityId = this._config.entity;
-    const stateObj = this.hass.states[entityId];
+    const entries = this._config.entities
+      .map((entity) => {
+        const stateObj = this.hass.states[entity.entity_id];
+        if (!stateObj) {
+          console.error(`Entity not found: ${entity.entity_id}`);
+          return undefined;
+        }
 
-    if (!stateObj) {
-      throw new Error(`Entity not found: ${entityId}`);
-    }
+        const data = stateObj.attributes.flights[0];
 
-    const data = stateObj.attributes.flights[0];
-    const f = v.parse(
-      v.fallback(
-        v.union([
-          mostTrackedFlightSchema,
-          areaFlightSchema,
-          v.object({ _type: v.literal('unknown') }),
-        ]),
-        { _type: 'unknown' }
-      ),
-      data
-    );
+        return {
+          title: entity.title,
+          flight: v.parse(
+            v.fallback(
+              v.union([
+                mostTrackedFlightSchema,
+                areaFlightSchema,
+                v.object({ _type: v.literal('unknown') }),
+              ]),
+              { _type: 'unknown' }
+            ),
+            data
+          ),
+        };
+      })
+      .filter(defined)
+      .sort((a, b) => {
+        // Put not passed schema objects at the end
+        if (a.flight._type === 'unknown') return 1;
+        if (b.flight._type === 'unknown') return -1;
+        return 0;
+      });
 
-    if (!this._config || !this.hass) {
-      return html`<hui-error-card>Something went wrong: check console for errors</hui-error-card>`;
-    }
+    const { flight: f, title: cardTitle } = entries[0];
 
     if (f._type === 'area') {
       const distance = f.closest_distance ?? f.distance;
 
       const flight: AreaFlight = {
         id: f.id,
-        title: `Último avião a sobrevoar (a ${distance.toFixed(1)} km)`,
+        title: cardTitle || t('title.default_area'),
         flightNumber: f.flight_number,
         callsign: f.callsign,
         airlineIcao:
@@ -128,7 +152,7 @@ export class FlightradarFlightCard extends LitElement {
 
       const flight: AreaFlight = {
         id: f.id,
-        title: 'Most tracked flights from FlightRadar24',
+        title: cardTitle || t('title.default_mosttracked'),
         flightNumber: f.flight_number,
         callsign: f.callsign,
         airlineIcao,

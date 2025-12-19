@@ -1,8 +1,6 @@
-import type { HassEntity } from 'home-assistant-js-websocket';
-
 import { ChangedProps, HomeAssistant } from '../types/homeassistant';
 
-export function hasConfigChanged(element: any, changedProps: ChangedProps): boolean {
+export function hasConfigChanged(hass: HomeAssistant, changedProps: ChangedProps): boolean {
   if (changedProps.has('_config')) {
     return true;
   }
@@ -17,14 +15,14 @@ export function hasConfigChanged(element: any, changedProps: ChangedProps): bool
   }
 
   if (
-    oldHass.connected !== element.hass!.connected ||
-    oldHass.themes !== element.hass!.themes ||
-    oldHass.locale !== element.hass!.locale ||
-    oldHass.localize !== element.hass.localize ||
-    oldHass.formatEntityState !== element.hass.formatEntityState ||
-    oldHass.formatEntityAttributeName !== element.hass.formatEntityAttributeName ||
-    oldHass.formatEntityAttributeValue !== element.hass.formatEntityAttributeValue ||
-    oldHass.config.state !== element.hass.config.state
+    oldHass.connected !== hass.connected ||
+    oldHass.themes !== hass.themes ||
+    oldHass.locale !== hass.locale ||
+    oldHass.localize !== hass.localize ||
+    oldHass.formatEntityState !== hass.formatEntityState ||
+    oldHass.formatEntityAttributeName !== hass.formatEntityAttributeName ||
+    oldHass.formatEntityAttributeValue !== hass.formatEntityAttributeValue ||
+    oldHass.config.state !== hass.config.state
   ) {
     return true;
   }
@@ -32,8 +30,8 @@ export function hasConfigChanged(element: any, changedProps: ChangedProps): bool
 }
 
 function compareEntityState(oldHass: HomeAssistant, newHass: HomeAssistant, entityId: string) {
-  const oldState = oldHass.states[entityId] as HassEntity | undefined;
-  const newState = newHass.states[entityId] as HassEntity | undefined;
+  const oldState = oldHass.states[entityId];
+  const newState = newHass.states[entityId];
 
   return oldState !== newState;
 }
@@ -43,27 +41,30 @@ function compareEntityDisplayEntry(
   newHass: HomeAssistant,
   entityId: string
 ) {
-  const oldEntry = oldHass.entities[entityId];
-  const newEntry = newHass.entities[entityId];
+  const oldEntity = oldHass.entities[entityId];
+  const newEntity = newHass.entities[entityId];
 
-  return oldEntry?.display_precision !== newEntry?.display_precision;
+  return oldEntity?.display_precision !== newEntity?.display_precision;
 }
 
-// Check if config or Entity changed
-export function hasConfigOrEntityChanged(element: any, changedProps: ChangedProps): boolean {
-  if (hasConfigChanged(element, changedProps)) {
-    return true;
-  }
-
+export function hasEntityChanged(
+  hass: HomeAssistant,
+  changedProps: ChangedProps,
+  entity: string | string[]
+) {
   if (!changedProps.has('hass')) {
     return false;
   }
 
   const oldHass = changedProps.get('hass')!;
-  const newHass = element.hass;
+  const newHass = hass;
 
-  return (
-    compareEntityState(oldHass, newHass, element._config!.entity) ||
-    compareEntityDisplayEntry(oldHass, newHass, element._config!.entity)
-  );
+  const entities = Array.isArray(entity) ? entity : [entity];
+
+  return entities.some((entityId) => {
+    return (
+      compareEntityState(oldHass, newHass, entityId) ||
+      compareEntityDisplayEntry(oldHass, newHass, entityId)
+    );
+  });
 }
