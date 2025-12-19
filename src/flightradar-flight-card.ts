@@ -139,11 +139,6 @@ export class FlightradarFlightCard extends LitElement {
         aircraftModel: f.aircraft_model,
         origin: f.airport_origin_city,
         destination: f.airport_destination_city,
-        distance: 0,
-        altitude: 0,
-        groundSpeed: 0,
-        departureTime: undefined,
-        arrivalTime: undefined,
         isLive: true,
       };
 

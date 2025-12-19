@@ -7,6 +7,7 @@ import { HomeAssistant } from './types/homeassistant';
 import { isValidAirlineLogo } from './utils/airline-icao';
 import { getFlightLabel } from './utils/flight';
 import { round } from './utils/math';
+import { defined } from './utils/type-guards';
 
 export type AreaFlight = {
   id: string;
@@ -30,10 +31,10 @@ export type AreaFlight = {
   /** Barometric pressure altitude above mean sea level (AMSL)
    * @unit feet
    */
-  altitude: number;
+  altitude?: number;
   /** Speed relative to the ground
    * @unit knots */
-  groundSpeed: number;
+  groundSpeed?: number;
   /** Whether the flight is currently in the air */
   isLive: boolean;
   /** Departure time in seconds */
@@ -81,6 +82,20 @@ export class FlightradarFlightCard extends LitElement {
   }
 
   protected render() {
+    const flightInfos = (
+      [
+        [this.t('altitude'), this.flight.altitude],
+        [this.t('ground_speed'), this.flight.groundSpeed],
+        [this.t('distance'), this.flight.distance, (v) => round(v, 1)],
+      ] satisfies Array<[string, number | undefined, ((v: number) => number)?]>
+    ).flatMap(([label, value, formatter]) => {
+      if (defined(value)) {
+        return { label, value: formatter?.(value) ?? value };
+      }
+
+      return [];
+    });
+
     return html`
       <ha-card>
         <div>
@@ -105,34 +120,27 @@ export class FlightradarFlightCard extends LitElement {
                     </div>
                   `
                 : nothing}
-              ${this.flight.origin || this.flight.destination
+              ${defined(this.flight.origin) || defined(this.flight.destination)
                 ? html` <div class="flight-locations">
                     ${this.flight.origin ?? this.t('origin_unknown')}
                     <ha-icon icon="mdi:arrow-right"></ha-icon>
                     ${this.flight.destination ?? this.t('destination_unknown')}
                   </div>`
                 : nothing}
-
-              <div class="flight-speed-info-container">
-                <div>
-                  <p class="label">${this.t('altitude')}</p>
-                  <p class="value">${this.flight.altitude} ft</p>
-                </div>
-
-                <div>
-                  <p class="label">${this.t('ground_speed')}</p>
-                  <p class="value">${this.flight.groundSpeed} kts</p>
-                </div>
-
-                ${this.flight.distance
-                  ? html`
-                      <div>
-                        <p class="label">${this.t('distance')}</p>
-                        <p class="value">${round(this.flight.distance, 1)} km</p>
-                      </div>
-                    `
-                  : nothing}
-              </div>
+              ${!!flightInfos.length
+                ? html`
+                    <div class="flight-speed-info-container">
+                      ${flightInfos.map(
+                        ({ label, value }) => html`
+                          <div>
+                            <p class="label">${label}</p>
+                            <p class="value">${value} ft</p>
+                          </div>
+                        `
+                      )}
+                    </div>
+                  `
+                : nothing}
             </div>
 
             <div class="main-content-right">
@@ -157,7 +165,9 @@ export class FlightradarFlightCard extends LitElement {
                       class="aircraft-photo"
                     />
                   `
-                : html`<ha-icon icon="mdi:airplane" class="aircraft-photo"></ha-icon>`}
+                : !!flightInfos.length
+                  ? html`<ha-icon icon="mdi:airplane" class="aircraft-photo"></ha-icon>`
+                  : nothing}
               ${this.flight.aircraftModel
                 ? html` <p class="aircraft-model">${this.flight.aircraftModel}</p> `
                 : nothing}
