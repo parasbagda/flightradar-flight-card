@@ -14,7 +14,7 @@ import serve from 'rollup-plugin-serve';
 const dev = !!process.env.ROLLUP_WATCH;
 
 const lastCommitHash = fs.readFileSync('.git/refs/heads/main', 'utf8').trim();
-const ghCommitRepositoryUrl = `https://github.com/plckr/flightradar-flight-card/tree/${lastCommitHash}`;
+const ghCommitRepositoryUrl = `https://raw.githubusercontent.com/plckr/flightradar-flight-card/${lastCommitHash}`;
 
 export default defineConfig(() => ({
   input: 'src/index.ts',
