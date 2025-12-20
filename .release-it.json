@@ -1,19 +1,18 @@
 {
   "git": {
-    "commitMessage": "chore: release v${version}",
+    "commitMessage": "Release v${version}",
     "tagName": "v${version}",
     "tagAnnotation": "Release v${version}"
   },
   "github": {
     "release": true,
     "releaseName": "v${version}",
-    "assets": ["dist/flightradar-flight-card.js"]
+    "autoGenerate": true
   },
   "npm": {
     "publish": false
   },
   "hooks": {
-    "before:init": ["npm run format:check", "npm run build"],
-    "after:bump": "npm run build"
+    "before:init": ["npm run format:check", "npm run build"]
   }
 }
